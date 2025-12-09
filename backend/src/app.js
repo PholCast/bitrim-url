@@ -5,7 +5,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 
-app.use('/api/urls', urlRoutes);
+app.use('/api/v1/urls', urlRoutes);
 
 export default app;
 

@@ -2,11 +2,11 @@ import pg from 'pg';
 const { Pool } = pg;
 
 export const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "bitrimUrl",
-  password: process.env.DB_PASSWORD || "tu_password",
-  port: process.env.DB_PORT || 5432
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT
 });
 
 pool.connect()
