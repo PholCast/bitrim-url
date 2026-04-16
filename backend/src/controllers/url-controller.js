@@ -1,4 +1,26 @@
-import { getOriginalUrl, createNewUrl } from '../services/url-service.js'
+import { getOriginalUrl, getUrlByShortCode, createNewUrl } from '../services/url-service.js'
+
+const notFoundErrors = new Set(['Code does not exist']);
+const badRequestErrors = new Set([
+    'Empty code',
+    'Original URL must be provided',
+    'The URL provided is not correct',
+    'The code provided already exists'
+]);
+
+const getStatusCodeFromError = (error) => {
+    const message = error?.message || '';
+
+    if (notFoundErrors.has(message)) {
+        return 404;
+    }
+
+    if (badRequestErrors.has(message) || message.startsWith('Code must be between')) {
+        return 400;
+    }
+
+    return 500;
+};
 
 const getUrl = async (req, res) => {
     try {
@@ -7,10 +29,21 @@ const getUrl = async (req, res) => {
         res.redirect(urlData.original_url)
         
     } catch (error) {
-        res.status(404).json({errorMessage:error.message});
+        const statusCode = getStatusCodeFromError(error);
+        res.status(statusCode).json({ error: error.message });
     }
     
     
+};
+
+const getUrlDetails = async (req, res) => {
+    try {
+        const urlData = await getUrlByShortCode(req.params.short_code);
+        res.status(200).json(urlData);
+    } catch (error) {
+        const statusCode = getStatusCodeFromError(error);
+        res.status(statusCode).json({ error: error.message });
+    }
 };
 
 const createUrl = async (req, res) => {
@@ -19,8 +52,9 @@ const createUrl = async (req, res) => {
         res.status(200).json(urlData)
 
     } catch (error) {
-        res.status(400).json({errorMessage:error.message});
+        const statusCode = getStatusCodeFromError(error);
+        res.status(statusCode).json({ error: error.message });
     }
 };
 
-export {getUrl, createUrl}
+export {getUrl, getUrlDetails, createUrl}

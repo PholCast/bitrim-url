@@ -1,5 +1,15 @@
 import { isValidUrl, normalizeUrl } from '../utils/validators.js'
 import { UrlModel } from '../models/url-model.js'
+
+const getUrlByShortCode = async (shortCode) => {
+    if(!shortCode) throw new Error('Empty code');
+
+    const urlData = await UrlModel.findByShortCode(shortCode);
+    if(!urlData) throw new Error('Code does not exist');
+
+    return urlData;
+}
+
 const getOriginalUrl = async (shortCode) => {
     
     if(!shortCode) throw new Error('Empty code');
@@ -71,4 +81,4 @@ const createNewUrl = async (originalUrl, description, shortCode = '') => {
 
 }
 
-export { getOriginalUrl, createNewUrl }
+export { getOriginalUrl, getUrlByShortCode, createNewUrl }

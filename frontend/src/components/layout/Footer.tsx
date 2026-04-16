@@ -9,7 +9,7 @@ export const Footer = () => {
         </div>
         <span className="text-xl font-extrabold">BiTrimURL</span>
         </div>
-        <p className='text-slate-500'>© 2026 Shorten.it. Open Source Utility.</p>
+        <p className='text-slate-500'>© 2026 BiTrimURL. Open Source Utility.</p>
       </div>
       <div className='flex justify-center items-center gap-8 text-slate-400'>
         <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">Privacy Policy</a>
