@@ -56,9 +56,13 @@ export interface Link { //todo: mover a un archivo types.ts o interfaces.ts
 
 const LOCAL_STORAGE_KEY = "links";
 const MIN_RECENT_LINKS_LOADING_MS = 1000;
+const MIN_CUSTOM_CODE_LENGTH = 5;
+const MAX_CUSTOM_CODE_LENGTH = 8;
+const customCodeRegex = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/;
 
 export const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [customCode, setCustomCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLinksHydrated, setIsLinksHydrated] = useState(false);
   const [isLoadingRecentLinks, setIsLoadingRecentLinks] = useState(true);
@@ -88,6 +92,15 @@ export const Home = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
   }
 
+  const handleCustomCodeChange = (value: string): void => {
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      setCustomCode(value);
+      return;
+    }
+
+    setErrorMessage("Custom code can only contain letters, numbers, and dashes.");
+  }
+
   const createUrl = async (): Promise<void> => {
     if (!isValidUrl(searchTerm)) {
       setErrorMessage("Please enter a valid URL (e.g. google.com or https://example.com).");
@@ -96,13 +109,31 @@ export const Home = () => {
 
     setErrorMessage("");
     const normalizedUrl = normalizeUrl(searchTerm);
+    const trimmedCustomCode = customCode.trim();
+
+    if (trimmedCustomCode && !customCodeRegex.test(trimmedCustomCode)) {
+      setErrorMessage("Custom code can use letters, numbers, and dashes, but cannot start or end with a dash or contain consecutive dashes.");
+      return;
+    }
+
+    if (
+      trimmedCustomCode &&
+      (trimmedCustomCode.length < MIN_CUSTOM_CODE_LENGTH ||
+        trimmedCustomCode.length > MAX_CUSTOM_CODE_LENGTH)
+    ) {
+      setErrorMessage(`Custom code must be between ${MIN_CUSTOM_CODE_LENGTH} and ${MAX_CUSTOM_CODE_LENGTH} characters.`);
+      return;
+    }
 
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ original_url: normalizedUrl })
+      body: JSON.stringify({
+        original_url: normalizedUrl,
+        short_code: trimmedCustomCode,
+      })
     }
 
     try {
@@ -118,6 +149,7 @@ export const Home = () => {
         return [...prevLinks, data];
       });
       setSearchTerm("");
+      setCustomCode("");
     } catch {
       setErrorMessage("Connection error. Please try again in a moment.");
     }
@@ -240,7 +272,7 @@ export const Home = () => {
     if (errorMessage) {
       setErrorMessage("");
     }
-  }, [searchTerm])
+  }, [searchTerm, customCode])
 
   return (
     <div className="w-full bg-linear-to-b from-[#0d1018] via-[#0b0f19] to-[#090c14]">
@@ -258,7 +290,13 @@ export const Home = () => {
         </p>
 
         <div className="mt-10 w-full max-w-2xl rounded-2xl border border-white/12 bg-[#131724] p-2 shadow-[0_20px_60px_-25px_rgba(124,59,237,0.55)]">
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} createUrl={createUrl} />
+          <Search
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            customCode={customCode}
+            onCustomCodeChange={handleCustomCodeChange}
+            createUrl={createUrl}
+          />
 
           {errorMessage ? (
             <p className="mt-3 px-1 text-center text-sm font-semibold text-rose-400">

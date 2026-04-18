@@ -5,7 +5,8 @@ const badRequestErrors = new Set([
     'Empty code',
     'Original URL must be provided',
     'The URL provided is not correct',
-    'The code provided already exists'
+    'The code provided already exists',
+    'Code can use letters, numbers, and internal dashes only'
 ]);
 
 const getStatusCodeFromError = (error) => {

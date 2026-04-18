@@ -16,7 +16,7 @@ export const UrlModel = {
 
     async findByShortCode(short_code){
         const result = await pool.query(
-            'SELECT * FROM urls WHERE short_code = $1',[short_code]
+            'SELECT * FROM urls WHERE LOWER(short_code) = LOWER($1)',[short_code]
         );
 
         return result.rows[0];  

@@ -28,7 +28,8 @@ const getOriginalUrl = async (shortCode) => {
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVXYZ0123456789';
 const MAX_ATTEMPTS = 10;
 const MIN_CODE_LENGTH = 5;
-const MAX_CODE_LENGTH = 7;
+const MAX_CODE_LENGTH = 8;
+const shortCodePattern = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/;
 
 const generateRandomCode = (length) => {
     let code = '';
@@ -48,6 +49,10 @@ const createNewUrl = async (originalUrl, description, shortCode = '') => {
     
     if (shortCode && (shortCode.length < MIN_CODE_LENGTH || shortCode.length > MAX_CODE_LENGTH)) {
         throw new Error(`Code must be between ${MIN_CODE_LENGTH} and ${MAX_CODE_LENGTH} characters`);
+    }
+
+    if (shortCode && !shortCodePattern.test(shortCode)) {
+        throw new Error('Code can use letters, numbers, and internal dashes only');
     }
 
     const existingCode = await UrlModel.findByShortCode(shortCode);

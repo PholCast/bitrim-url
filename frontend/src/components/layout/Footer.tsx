@@ -12,9 +12,9 @@ export const Footer = () => {
         <p className='text-slate-500'>© 2026 BiTrimURL. Open Source Utility.</p>
       </div>
       <div className='flex justify-center items-center gap-8 text-slate-400'>
-        <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">Privacy Policy</a>
+        {/* <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">Privacy Policy</a>
         <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">Terms of service</a>
-        <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">API docs</a>
+        <a href="https://www.youtube.com/watch?v=Aq5WXmQQooo">API docs</a> */}
       </div>
       <div>
         <span className=' text-slate-400'>Made with ❤️ by Pholcast</span>

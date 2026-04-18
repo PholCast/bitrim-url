@@ -2,10 +2,12 @@
 interface props {
     searchTerm: string;
     setSearchTerm: (term: string) => void;
+  customCode: string;
+  onCustomCodeChange: (code: string) => void;
     createUrl?: () => void;
 }
 
-export const Search = ({searchTerm, setSearchTerm, createUrl}:props) => {
+export const Search = ({searchTerm, setSearchTerm, customCode, onCustomCodeChange, createUrl}:props) => {
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl bg-[#131722] p-3">
         <div className="flex items-center gap-3 rounded-lg border border-white/8 px-4 py-3">
@@ -16,6 +18,35 @@ export const Search = ({searchTerm, setSearchTerm, createUrl}:props) => {
                    value={searchTerm}
                    onChange={e => setSearchTerm(e.target.value) } />
         </div>
+
+              <div className="rounded-lg border border-white/8 px-4 py-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-extrabold tracking-[0.18em] text-slate-400 uppercase">CUSTOM CODE</p>
+                  <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[10px] font-bold text-primary uppercase">
+                    optional
+                  </span>
+                </div>
+
+                <div className="flex overflow-hidden rounded-md border border-white/8 bg-[#0e1320]">
+                  <span className="flex items-center border-r border-white/8 bg-[#171c2c] px-3 py-2 text-sm font-semibold text-slate-400">
+                    bitrim.url/
+                  </span>
+                  <input
+                    className="w-full bg-transparent px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0"
+                    type="text"
+                    placeholder="my-link"
+                    value={customCode}
+                    onChange={(e) => onCustomCodeChange(e.target.value)}
+                    minLength={5}
+                    maxLength={8}
+                  />
+                </div>
+
+                <p className="mt-2 text-xs text-slate-500">
+                  Leave empty and we&apos;ll generate a code automatically. Use letters, numbers, and internal dashes (example: my-link), 5 to 8 characters. It cannot start or end with a dash.
+                </p>
+              </div>
+
         <button onClick={createUrl} className="rounded-lg bg-primary py-3 text-white font-extrabold hover:cursor-pointer hover:bg-primary/90 active:scale-98">
             Shorten URL
         </button>
